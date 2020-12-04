@@ -1,7 +1,7 @@
 #include "Graph.h"
 #include "Stack.h"
 #include <time.h>
-#include <fstream>
+//#include <fstream>
 using namespace std;
 MazeNode::MazeNode(bool w)
 {
@@ -80,13 +80,12 @@ Maze::Maze(int w, int h)
         iterator = iterator->left;
         iterator->wall = true;
     }
+    botLeft = iterator;
     while (iterator->up != nullptr)
     {
         iterator = iterator->up;
         iterator->wall = true;
     }
-    
-    botLeft = iterator;
 }
 void Maze::print()
 {
@@ -339,8 +338,133 @@ xy Maze::getCoords(MazeNode* node)
     }
     return retVal;
 }
+void Maze::resetMaze()
+{
+    for(int i = 1; i < height - 1; i++)
+    {
+        MazeNode* iterator = move(topLeft, 1, i);
+        iterator = iterator->right;
+        for(int z = 1; z < width - 1; z++)
+        {
+            iterator->wall = false;
+            iterator = iterator->right;
+        }
+    }
+}
+void Maze::resizeMaze(int w, int h)
+{
+    if(w < width)
+    {
+        MazeNode* iterator = topRight;
+        for(int i = 0; i < width - w; i++)
+        {
+            MazeNode* left = iterator->left;
+            for(int x = 0; x < height; x++)
+            {
+                MazeNode* down = iterator->down;
+                MazeNode* anotherLeft = iterator->left;
+                anotherLeft->right = nullptr;
+                if(down != nullptr)
+                {
+                    down->up = nullptr;
+                }
+                delete iterator;
+                iterator = down;
+            }
+            iterator = left;
+            topRight = left;
+        }
+        iterator = topRight;
+        for(int i = 0; i < height; i++)
+        {
+            iterator->wall = true;
+            iterator = iterator->down;
+        }
+    }
+    else if(w > width)
+    {
+        MazeNode* iterator;
+        for(int i = 0; i < w-width; i++)
+        {
+            iterator = topRight;
+            for(int x = 0; x < height; x++)
+            {
+                iterator->right = new MazeNode(true);
+                iterator->right->left = iterator;
+                if(iterator->up != nullptr)
+                {
+                    iterator->up->right->down = iterator->right;
+                    iterator->right->up = iterator->up->right;
+                }
+                iterator = iterator->down;
+            }
+            topRight = topRight->right;
+            botRight = botRight->right;
+        }
+        iterator = topRight;
+        for(int i = 0; i < height; i++)
+        {
+            iterator->wall = true;
+            iterator = iterator->down;
+        }
+    }
+    width = w;
+    if(h < height)
+    {
+        MazeNode* iterator = botLeft;
+        for(int i = 0; i < height - h; i++)
+        {
+            iterator = botLeft;
+            botLeft = botLeft->up;
+            for(int x = 0; x < width; x++)
+            {
+                MazeNode* up = iterator->up;
+                MazeNode* right = iterator->right;
+                up->down = nullptr;
+                delete iterator;
+                iterator = right;
+            }
+        }
+        iterator = botLeft;
+        for(int i = 0; i < width; i++)
+        {
+            iterator->wall = true;
+            iterator = iterator->right;
+        }
+        height = h;
+    }
+    else if(h > height)
+    {
+        MazeNode* iterator;
+        for(int i = 0; i < h-height; i++)
+        {
+            iterator = botLeft;
+            for(int x = 0; x < width; x++)
+            {
+                iterator->down = new MazeNode(true);
+                iterator->down->up = iterator;
+                if(iterator->left != nullptr)
+                {
+                    iterator->left->down->right = iterator->down;
+                    iterator->down->left = iterator->left->down;
+                }
+                iterator = iterator->right;
+            }
+            botLeft = botLeft->down;
+            botRight = botRight->down;
+        }
+        iterator = botLeft;
+        for(int i = 0; i < width; i++)
+        {
+            iterator->wall = true;
+            iterator = iterator->right;
+        }
+    }
+    height = h;
+}
 void Maze::recursiveDivision()
 {
+    resetMaze();
     int startX = 1;
     int startY = (int)rand() % (height-1)+1;
     MazeNode* startNode = getNode(startX, startY);
@@ -454,14 +578,17 @@ void Maze::recursiveDivision()
         }
     }
 }
+/*
 int main(int argc, char const *argv[])
 {
     srand (time(NULL));
     Maze maze(500,500);
     maze.recursiveDivision();
-    ofstream file;
-    file.open("Maze.txt");
-    file << maze.textMaze();
-    file.close();
+    //ofstream file;
+    //file.open("Maze.txt");
+    //file << maze.textMaze();
+    //file.close();
+    maze.print();
     return 0;
 }
+*/

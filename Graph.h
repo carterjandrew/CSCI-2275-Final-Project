@@ -43,5 +43,7 @@ class Maze{
     void makeWall(MazeNode* start, int dir);
     bool checkValid(MazeNode* start, int dir);
     std::string textMaze();
+    void resetMaze();
+    void resizeMaze(int w, int h);
 };
 #endif
