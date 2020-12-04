@@ -20,13 +20,16 @@ int main(int argc, char const *argv[])
                     "4. Pathfind\n"
                     "5. Print Maze\n"
                     "6. Resize\n"
-					"7. Quit\n";
+                    "7. Output current maze to file\n"
+					"8. Quit\n";
         int choice;
         cout << dmenu;
         while (cin >> choice)
         {
             cin.clear();
             cin.ignore();
+            string fileName;
+            ofstream file;
             switch (choice)
             {
                 case 1:
@@ -61,7 +64,16 @@ int main(int argc, char const *argv[])
                     cout << dmenu;
                     break;
                 case 7:
-                    return 0; 
+                    cout << "Input file name (NO NOT INCLUDE .txt)\n";
+                    cin >> fileName;
+                    fileName += ".txt";
+                    file.open(fileName);
+                    file << maze.textMaze();
+                    file.close();
+                    cout << dmenu;
+                    break;
+                case 8:
+                    return 0;
                     break;
             }
         }
