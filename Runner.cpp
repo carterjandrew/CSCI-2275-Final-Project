@@ -48,6 +48,7 @@ int main(int argc, char const *argv[])
                     }
                     else
                     {
+                        maze.resetPathfinding();
                         maze.setStart(x, y);
                     }
                     cout << dmenu;
@@ -63,6 +64,7 @@ int main(int argc, char const *argv[])
                     }
                     else
                     {
+                        maze.resetPathfinding();
                         maze.setEnd(x, y);
                     }
                     cout << dmenu;
@@ -82,8 +84,16 @@ int main(int argc, char const *argv[])
                     cin >> w;
                     cout << "\nEnter new height\n";
                     cin >> h;
-                    maze.resizeMaze(w,h);
-                    maze.resetMaze();
+                    if(w > 3 && h > 3)
+                    {
+                        maze.resizeMaze(w,h);
+                        maze.resetMaze();
+                    }
+                    else
+                    {
+                        cout << "The size you entered was bad! Pleaze make it larger than 3x3.";
+                    }
+                    
                     cout << dmenu;
                     break;
                 case 7:
