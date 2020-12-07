@@ -95,13 +95,25 @@ void Maze::print()
         MazeNode* hIterator = iterator;
         while (hIterator != nullptr)
         {
-            if(hIterator->wall)
+            if(hIterator == start)
+            {
+                cout <<  "SS";
+            }
+            else if(hIterator == end)
+            {
+                cout <<  "EE";
+            }
+            else if(hIterator->path == true)
+            {
+                cout <<  "▒▒";
+            }
+            else if(hIterator->wall)
             {
                 cout << "██";
             }
             else
             {
-                cout << "░░";
+                cout << "  ";
             }
             
             hIterator = hIterator->right;
@@ -119,13 +131,26 @@ string Maze::textMaze()
         MazeNode* hIterator = iterator;
         while (hIterator != nullptr)
         {
-            if(hIterator->wall)
+            
+            if(hIterator == start)
+            {
+                output += "SS";
+            }
+            else if(hIterator == end)
+            {
+                output += "EE";
+            }
+            else if(hIterator->path == true)
+            {
+                output += "▒▒";
+            }
+            else if(hIterator->wall)
             {
                 output += "██";
             }
             else
             {
-                output += "░░";
+                output += "  ";
             }
             
             hIterator = hIterator->right;
@@ -576,6 +601,54 @@ void Maze::recursiveDivision()
                 break;
             }
         }
+    }
+}
+void Maze::setEnd(int x, int y)
+{
+    end = getNode(x,y);
+}
+void Maze::setStart(int x, int y)
+{
+    start = getNode(x,y);
+}
+void Maze::BFS(MazeNode* current, int dist)
+{
+    current->visited = true;
+    current->dist = dist;
+    if((!current->left->visited && !current->left->wall) || current->left->dist > dist)
+    {
+        current->left->prev = current;
+        BFS(current->left, dist + 1);
+    }
+    if((!current->right->visited && !current->right->wall) || current->right->dist > dist)
+    {
+        current->right->prev = current;
+        BFS(current->right, dist + 1);
+    }
+    if((!current->down->visited && !current->down->wall) || current->down->dist > dist)
+    {
+        current->down->prev = current;
+        BFS(current->down, dist + 1);
+    }
+    if((!current->up->visited && !current->up->wall) || current->up->dist > dist)
+    {
+        current->up->prev = current;
+        BFS(current->up, dist + 1);
+    }
+}
+void Maze::pathFind()
+{
+    if(!start || !end || start == end)
+    {
+        cout << "\nEither the start/end dont exist or start = end\n";
+        return;
+    }
+    BFS(start, -1);
+    MazeNode* iterator = end;
+    while (iterator->prev)
+    {
+        iterator->path = true;
+        iterator = iterator->prev;
     }
 }
 /*
