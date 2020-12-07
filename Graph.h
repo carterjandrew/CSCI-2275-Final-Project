@@ -1,6 +1,5 @@
 #ifndef MAZE_H
 #define MAZE_H
-#include <vector>
 #include <iostream>
 #include <string>
 //The graph is designed using a maze node so that we can dynamically increase the size
