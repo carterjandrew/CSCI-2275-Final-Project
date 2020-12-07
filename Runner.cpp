@@ -30,6 +30,7 @@ int main(int argc, char const *argv[])
             cin.ignore();
             string fileName;
             ofstream file;
+            int x, y;
             switch (choice)
             {
                 case 1:
@@ -37,15 +38,37 @@ int main(int argc, char const *argv[])
                     cout << dmenu;
                     break;
                 case 2:
-                    return 0;
+                    cout << "Enter the x coordinate\n";
+                    cin >> x;
+                    cout << "Enter the y coordinate\n";
+                    cin >> y;
+                    if(x < 0 || y < 0 || y > maze.height - 1 || x > maze.width -1)
+                    {
+                        cout << "There is something wrong with the coordinates you entered";
+                    }
+                    else
+                    {
+                        maze.setStart(x, y);
+                    }
                     cout << dmenu;
                     break;
                 case 3:
-                    return 0;
+                    cout << "Enter the x coordinate\n";
+                    cin >> x;
+                    cout << "Enter the y coordinate\n";
+                    cin >> y;
+                    if(x < 0 || y < 0 || y > maze.height - 1 || x > maze.width -1)
+                    {
+                        cout << "There is something wrong with the coordinates you entered";
+                    }
+                    else
+                    {
+                        maze.setEnd(x, y);
+                    }
                     cout << dmenu;
                     break;
                 case 4:
-                    return 0;
+                    maze.pathFind();
                     cout << dmenu;
                     break;
                 case 5:
