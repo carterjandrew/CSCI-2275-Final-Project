@@ -650,6 +650,38 @@ void Maze::pathFind()
         iterator->path = true;
         iterator = iterator->prev;
     }
+    iterator = topLeft;
+    MazeNode* down = iterator->down;
+    while (down)
+    {
+        while (iterator)
+        {
+            iterator->dist = -1;
+            iterator->visited = false;
+            iterator->prev = nullptr;
+            iterator = iterator->right;
+        }
+        iterator = down;
+        down = down->down;
+    }
+}
+void Maze::resetPathfinding()
+{
+    MazeNode* iterator = topLeft;
+    MazeNode* down = iterator->down;
+    while(down)
+    {
+        while (iterator)
+        {
+            iterator->path = false;
+            iterator->visited = false;
+            iterator->prev = nullptr;
+            iterator->dist = -1;
+            iterator = iterator->right;
+        }
+        iterator = down;
+        down = down->down;
+    }
 }
 /*
 int main(int argc, char const *argv[])
