@@ -7,6 +7,8 @@ There is no third party software being used in this application. With the except
 # Issues
 For me at least every once in a while when I run the project there is a floating point error with the recursive maze generation function. Also I think there might be a random seg fault every once in while when you resize the maze and make both sizes bigger.
 # Running the code:
+Type the following into a Linux terminal
+
 g++ -std=c++11 -o test Stack.cpp Graph.cpp Runner.cpp
 
 ./test
