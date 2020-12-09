@@ -105,11 +105,11 @@ void Maze::print()
             }
             else if(hIterator->path == true)
             {
-                cout <<  "▒▒";
+                cout <<  "PP";
             }
             else if(hIterator->wall)
             {
-                cout << "██";
+                cout << "WW";
             }
             else
             {
@@ -142,11 +142,11 @@ string Maze::textMaze()
             }
             else if(hIterator->path == true)
             {
-                output += "▒▒";
+                output += "PP";
             }
             else if(hIterator->wall)
             {
-                output += "██";
+                output += "WW";
             }
             else
             {
@@ -605,11 +605,25 @@ void Maze::recursiveDivision()
 }
 void Maze::setEnd(int x, int y)
 {
-    end = getNode(x,y);
+    if(getNode(x,y)->wall)
+    {
+        cout << "The coordinate you entered is a wall, please enter a non wall coordinate.";
+    }
+    else
+    {
+        end = getNode(x,y);
+    }
 }
 void Maze::setStart(int x, int y)
 {
-    start = getNode(x,y);
+    if(getNode(x,y)->wall)
+    {
+        cout << "The coordinate you entered is a wall, please enter a non wall coordinate.";
+    }
+    else
+    {
+        start = getNode(x,y);
+    }
 }
 void Maze::BFS(MazeNode* current, int dist)
 {
