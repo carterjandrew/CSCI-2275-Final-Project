@@ -252,6 +252,10 @@ MazeNode* Maze::getNode(int x, int y)
 void Maze:: makeWall(MazeNode* start, int dir)
 {
     int dist = probeDepth(start,dir);
+    if(dist == 0)
+    {
+        return;
+    }
     int hole = (int)rand() % dist;
     for(int i = 0; i < dist; i++)
     {
@@ -367,6 +371,7 @@ xy Maze::getCoords(MazeNode* node)
 }
 void Maze::resetMaze()
 {
+    cout << height << endl;
     for(int i = 1; i < height - 1; i++)
     {
         MazeNode* iterator = move(topLeft, 1, i);
@@ -405,6 +410,7 @@ void Maze::resizeMaze(int w, int h)
         for(int i = 0; i < height; i++)
         {
             iterator->wall = true;
+            botRight = iterator;
             iterator = iterator->down;
         }
     }
@@ -456,9 +462,9 @@ void Maze::resizeMaze(int w, int h)
         for(int i = 0; i < width; i++)
         {
             iterator->wall = true;
+            botRight = iterator;
             iterator = iterator->right;
         }
-        height = h;
     }
     else if(h > height)
     {
@@ -493,6 +499,10 @@ void Maze::recursiveDivision()
 {
     resetMaze();
     int startX = 1;
+    if(height == 0)
+    {
+        return;
+    }
     int startY = (int)rand() % (height-1)+1;
     MazeNode* startNode = getNode(startX, startY);
     Stack branchCommands;
@@ -609,7 +619,7 @@ void Maze::setEnd(int x, int y)
 {
     if(getNode(x,y)->wall)
     {
-        cout << "The coordinate you entered is a wall, please enter a non wall coordinate.";
+        cout << "The coordinate you entered is a wall, please enter a non wall coordinate.\n";
     }
     else
     {
@@ -620,7 +630,7 @@ void Maze::setStart(int x, int y)
 {
     if(getNode(x,y)->wall)
     {
-        cout << "The coordinate you entered is a wall, please enter a non wall coordinate.";
+        cout << "The coordinate you entered is a wall, please enter a non wall coordinate.\n";
     }
     else
     {

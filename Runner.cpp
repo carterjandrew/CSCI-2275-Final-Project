@@ -48,7 +48,7 @@ int main(int argc, char const *argv[])
                     cin >> y;
                     if(x-1 < 0 || y-1 < 0 || y > maze.height|| x > maze.width)
                     {
-                        cout << "There is something wrong with the coordinates you entered";
+                        cout << "There is something wrong with the coordinates you entered\n";
                     }
                     else
                     {
@@ -64,7 +64,7 @@ int main(int argc, char const *argv[])
                     cin >> y;
                     if(x < 0 || y < 0 || y > maze.height - 1 || x > maze.width -1)
                     {
-                        cout << "There is something wrong with the coordinates you entered";
+                        cout << "There is something wrong with the coordinates you entered\n";
                     }
                     else
                     {
@@ -96,7 +96,7 @@ int main(int argc, char const *argv[])
                     }
                     else
                     {
-                        cout << "The size you entered was bad! Pleaze make it larger than 3x3.";
+                        cout << "The size you entered was bad! Pleaze make it larger than 3x3.\n";
                     }
                     
                     cout << dmenu;
