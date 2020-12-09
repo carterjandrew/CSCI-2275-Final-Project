@@ -14,6 +14,7 @@ int main(int argc, char const *argv[])
     while (true)
     {
         std::string dmenu = "======Main Menu=====\n"
+                    "Please enter the number of the command below you want to preform\n"
 					"1. Recursively Divise the Maze\n"
 					"2. Set Start Point\n"
                     "3. Set End Point\n"
