@@ -10,4 +10,5 @@ For me at least every once in a while when I run the project there is a floating
 g++ -std=c++11 -o test Stack.cpp Graph.cpp Runner.cpp
 
 ./test
+
 There are no command line arguments to feel free to change "test" to whatever file name you want when running
