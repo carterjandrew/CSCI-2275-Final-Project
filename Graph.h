@@ -20,12 +20,17 @@ struct MazeNode
     bool path;
     int dist = -1;
 };
-
+//Coordinate data that makes passing around an x,y system easier. 
 struct xy{
     public:
     int x;
     int y;
 };
+//Our maze has an array of functions explained in depth in Graph.cpp
+//We need a couple of objects to keep the maze running
+//4 poiters for each edge of the maze so we can acess from where we like to. 
+//We need to store the width and height of the maze
+//Then we also store start and end points for our maze pathfinding
 class Maze{
     private:
     MazeNode* topLeft = nullptr;

@@ -2,10 +2,12 @@
 #include "Stack.h"
 //#include <fstream>
 using namespace std;
+//We can set up a maze node with all 4 of its pointers null but we can choose if it's a wall or not
 MazeNode::MazeNode(bool w)
 {
     wall = w;
 }
+//We can enter all surounding walls, if some walls don't exist just use nullptr as an arguemnt. 
 MazeNode::MazeNode(bool w, MazeNode* u, MazeNode* d, MazeNode* l, MazeNode* r)
 {
     wall = w;
@@ -14,10 +16,12 @@ MazeNode::MazeNode(bool w, MazeNode* u, MazeNode* d, MazeNode* l, MazeNode* r)
     left = l;
     right = r;
 }
+//Initialising the maze means we actually have to build out every node. This is done through layeering for loops and then adding connections as we go. 
 Maze::Maze(int w, int h)
 {
     width = w;
     height = h;
+    //pleft = previous left, pup is previous up, they are used for setting up the connecitons between the maze. 
     MazeNode* pleft = nullptr;
     MazeNode* pup = nullptr;
     for(int i = 0; i < width; i++)
@@ -60,6 +64,8 @@ Maze::Maze(int w, int h)
         pup = nullptr;
         pleft = topNode;
     }
+    //Now, we are going to set up our for reference nodes, topLeft has allready been set up and will be used to find topRight, bottomLeft, and bottomeRight
+    //We will also be setting up the outisde walls of the maze right now. 
     MazeNode* iterator = topLeft;
     iterator->wall = true;
     while (iterator->right != nullptr)
@@ -86,6 +92,8 @@ Maze::Maze(int w, int h)
         iterator->wall = true;
     }
 }
+//Printing is pretty simple, start up in the corner and then work your way down while couting what we find. 
+//We need to check if it's start/end first because otherwise it could get printed as an empty node. 
 void Maze::print()
 {
     MazeNode* iterator = topLeft;
@@ -121,6 +129,7 @@ void Maze::print()
         cout << endl;
     }
 }
+//Same thing as printing except we put it into a string then returned and put into a file. 
 string Maze::textMaze()
 {
     MazeNode* iterator = topLeft;
@@ -159,6 +168,8 @@ string Maze::textMaze()
     }
     return output;
 }
+//This is to handle most of the directional, up, down, left, right. We use a number to indicate the direction: 0 = up, 1 = down, 2 = left, 3 = right and so on. 
+//We return a new node that we navigated to. This will return nullptr if we go off the side of the maze. 
 MazeNode* move(MazeNode* start, int d, int dist)
 {
     switch (d)
@@ -192,7 +203,10 @@ MazeNode* move(MazeNode* start, int d, int dist)
     }
     return start;
 }
-
+//Basically this iterates in a direction through the maze until it hits a wall and then returns the distance it traveled. 
+//This is used for the recursive division function to see if a wall can be put in a certain place. 
+//It uses the same direction coordinates as described in move()
+//Also directions are right below this comment. 
 int Maze::probeDepth(MazeNode* start, int dir)
 {
     //0 means up
@@ -232,6 +246,8 @@ int Maze::probeDepth(MazeNode* start, int dir)
     }
     return dist;
 }
+//Takes in coordinates and returns the cooresponding node in the maze. This is used because our stack does not have acess to our node data type
+//It will handleout of bounds errors with returning a nullptr. 
 MazeNode* Maze::getNode(int x, int y)
 {
     if(x > width || y > height)
@@ -249,6 +265,10 @@ MazeNode* Maze::getNode(int x, int y)
     }
     return iterator;
 }
+//When we make a wall we need to do a couple of things:
+//1. We need to find out how long the wall will be by using probeDepth()
+//2. We need to randomly choose a hole in the wall where we wont make the node a wall
+//3. We need to make the wall and set up the hole in the wall. 
 void Maze:: makeWall(MazeNode* start, int dir)
 {
     int dist = probeDepth(start,dir);
@@ -280,6 +300,8 @@ void Maze:: makeWall(MazeNode* start, int dir)
         }
     }
 }
+//Basically used to see if we could possibly make a wall in a given spot. 
+//We expand on probeDepth by checking if there is a wall up, down, left, or right of our potental wall that could cause an invalid maze.
 bool Maze::checkValid(MazeNode* start, int dir)
 {
     //bool valid = true;
@@ -354,6 +376,7 @@ bool Maze::checkValid(MazeNode* start, int dir)
     }
     return true;
 }
+//We return a pair of coordinates used for setting up our stack. Basically we start at our node and iterate to the top left while recording our distance. 
 xy Maze::getCoords(MazeNode* node)
 {
     xy retVal;
@@ -383,8 +406,10 @@ void Maze::resetMaze()
         }
     }
 }
+//This has four possible states we need to check, if our width or height get smaller or larger. 
 void Maze::resizeMaze(int w, int h)
 {
+    //For when we need to make the maze smaller we can simply delete them off of the end, update our edge nodes(bottomLeft..ect), then set our new width. 
     if(w < width)
     {
         MazeNode* iterator = topRight;
@@ -414,6 +439,7 @@ void Maze::resizeMaze(int w, int h)
             iterator = iterator->down;
         }
     }
+    //For making it larger we need to add nodes on in a certain direction. This is a little bit more complicated because we need to set up our edgeNodes propely
     else if(w > width)
     {
         MazeNode* iterator;
@@ -442,6 +468,7 @@ void Maze::resizeMaze(int w, int h)
         }
     }
     width = w;
+    //Same thing as before but in a vertical direction now
     if(h < height)
     {
         MazeNode* iterator = botLeft;
@@ -495,8 +522,11 @@ void Maze::resizeMaze(int w, int h)
     }
     height = h;
 }
+//This is where we actually divide the maze up, we use a stack to handle different walls we create and make sub-walls that branch off those walls.
+//If we cant make any more sub-walls then we pop that wall off our stack and move back out until we have a fully completed maze. 
 void Maze::recursiveDivision()
 {
+    //We need to make sure there isnt allready walls then we start. 
     resetMaze();
     int startX = 1;
     if(height == 0)
@@ -505,6 +535,7 @@ void Maze::recursiveDivision()
     }
     int startY = (int)rand() % (height-1)+1;
     MazeNode* startNode = getNode(startX, startY);
+    //Sets up our stakc and first wall for use. 
     Stack branchCommands;
     branchCommands.push(startX,startY,3, probeDepth(startNode, 3));
     makeWall(startNode, 3);
@@ -513,6 +544,8 @@ void Maze::recursiveDivision()
         //First we need to update all the possible branches
         StackNode currentBranch = branchCommands.top();
         vector<BranchPossibility> validsBranches;
+        //We need to check up and down for wall that go left and right and visa versa so we need a swith command to handle each one. 
+        //Basically what each of these is doing is updating the possible branches off to the side to make sure we have coorectly identified branches we can go down
         switch (currentBranch.dir)
         {
         case 0:
@@ -565,6 +598,7 @@ void Maze::recursiveDivision()
         {
             branchCommands.pop();
         }
+        //Otherwize we will make a new wall and then push that onto the stack. 
         else
         {
             int nextBranch = (int) rand() % validsBranches.size();
@@ -615,6 +649,7 @@ void Maze::recursiveDivision()
         }
     }
 }
+//Used to set an end point for our maze. We dont want the maze to be on a wall so if it is we dont set it up
 void Maze::setEnd(int x, int y)
 {
     if(getNode(x,y)->wall)
@@ -626,6 +661,7 @@ void Maze::setEnd(int x, int y)
         end = getNode(x,y);
     }
 }
+//Same thing as above but for our starting node. 
 void Maze::setStart(int x, int y)
 {
     if(getNode(x,y)->wall)
@@ -637,6 +673,9 @@ void Maze::setStart(int x, int y)
         start = getNode(x,y);
     }
 }
+//Use a recursive breadth first search to find the fastest path from start to end. 
+//This function is initialised by pathfind() and then runs recursively
+//Is eitheer the distance from start is smaller or we havent visited we will set up the maze to that new path setup
 void Maze::BFS(MazeNode* current, int dist)
 {
     current->visited = true;
@@ -662,6 +701,7 @@ void Maze::BFS(MazeNode* current, int dist)
         BFS(current->up, dist + 1);
     }
 }
+//Initialises our bfs from our start point to the end point
 void Maze::pathFind()
 {
     if(!start || !end || start == end)
@@ -691,6 +731,8 @@ void Maze::pathFind()
         down = down->down;
     }
 }
+//The pathfinding does not interact well with functions like resize and recursive division so we need to use this to reset our path and strt/end points
+//We pass in a bool to tell wether or not we should get rid of the start/end points
 void Maze::resetPathfinding(bool killStart)
 {
     if(killStart)
