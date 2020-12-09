@@ -1,10 +1,12 @@
 #include "Graph.h"
 #include <fstream>
+#include <time.h>
 using namespace std;
 int main(int argc, char const *argv[])
 {
     //Initialise maze
-    cout << "Welcome to Carters Final Project for CSCI2275! Please enter a width for the Maze:\n";
+    srand (time(NULL));
+    cout << "Welcome to Carters Final Project for CSCI2275!\nThis project allows you to create and randomly generate a maze, and then mess aourd with it as you please\nTo begin, please enter a width for the Maze:\n";
     int width;
     cin >> width;
     cout << "\nNow please enter a height:\n";
@@ -35,6 +37,7 @@ int main(int argc, char const *argv[])
             switch (choice)
             {
                 case 1:
+                    maze.resetPathfinding(true);
                     maze.recursiveDivision();
                     cout << dmenu;
                     break;
@@ -49,7 +52,7 @@ int main(int argc, char const *argv[])
                     }
                     else
                     {
-                        maze.resetPathfinding();
+                        maze.resetPathfinding(false);
                         maze.setStart(x-1, y-1);
                     }
                     cout << dmenu;
@@ -65,8 +68,8 @@ int main(int argc, char const *argv[])
                     }
                     else
                     {
-                        maze.resetPathfinding();
-                        maze.setEnd(x, y);
+                        maze.resetPathfinding(false);
+                        maze.setEnd(x-1, y-1);
                     }
                     cout << dmenu;
                     break;
@@ -79,6 +82,7 @@ int main(int argc, char const *argv[])
                     cout << dmenu;
                     break;
                 case 6:
+                    maze.resetPathfinding(true);
                     cout << "Enter new width\n";
                     int w;
                     int h;
@@ -108,6 +112,9 @@ int main(int argc, char const *argv[])
                     break;
                 case 8:
                     return 0;
+                    break;
+                default:
+                    cout << dmenu;
                     break;
             }
         }

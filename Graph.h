@@ -54,7 +54,7 @@ class Maze{
     MazeNode* start = nullptr;
     MazeNode* end = nullptr;
     void BFS(MazeNode* current, int dist);
-    void resetPathfinding();
+    void resetPathfinding(bool killStart);
     bool finishedBFS = false;
 };
 #endif

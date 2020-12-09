@@ -1,6 +1,5 @@
 #include "Graph.h"
 #include "Stack.h"
-#include <time.h>
 //#include <fstream>
 using namespace std;
 MazeNode::MazeNode(bool w)
@@ -188,9 +187,12 @@ MazeNode* move(MazeNode* start, int d, int dist)
             start = start->right;
         }
         break;
+    default:
+        break;
     }
     return start;
 }
+
 int Maze::probeDepth(MazeNode* start, int dir)
 {
     //0 means up
@@ -679,8 +681,13 @@ void Maze::pathFind()
         down = down->down;
     }
 }
-void Maze::resetPathfinding()
+void Maze::resetPathfinding(bool killStart)
 {
+    if(killStart)
+    {
+        start = nullptr;
+        end = nullptr;
+    }
     MazeNode* iterator = topLeft;
     MazeNode* down = iterator->down;
     while(down)
